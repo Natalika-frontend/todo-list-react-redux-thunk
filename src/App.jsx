@@ -19,7 +19,6 @@ function App() {
 	const [showSearch, setShowSearch] = useState(false);
 
 	const [isSearching, setIsSearching] = useState(false);
-	const [isSearch, setIsSearch] = useState(false);
 	const [isSorting, setIsSorting] = useState(false);
 
 	const { todos, isLoading, fetchTodos } = useRequestReadTasks();
@@ -67,12 +66,14 @@ function App() {
 	};
 
 	const toggleSearch = () => {
+		setIsSorting(isSorting);
 		setShowSearch(!showSearch);
-		setIsSearch(!isSearch);
+		setIsSearching(!isSearching);
 		setError('');
 	};
 
 	const handleSearch = (searchValue) => {
+		setIsSorting(false);
 		setSearchPhrase(searchValue);
 	};
 
@@ -92,7 +93,7 @@ function App() {
 					{isLoading ? (
 						<div className={styles.loader}></div>
 					) : (
-						((isSearch || isSorting) ? filteredTodos : todos).map(({ id, title }) => (
+						((isSearching || isSorting) ? filteredTodos : todos).map(({ id, title }) => (
 							<Task key={id}
 								  id={id}
 								  title={title}
