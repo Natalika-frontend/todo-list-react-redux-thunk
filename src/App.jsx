@@ -7,10 +7,7 @@ import {
 	useTaskText,
 } from './hooks';
 import { useEffect, useState } from 'react';
-import { Header } from './components/header/header';
-import { Task } from './components/task/task';
-import { Search } from './components/searh/search';
-import { Footer } from './components/footer/footer';
+import { Header, Task, Search, Footer } from './components';
 
 function App() {
 	const { taskText, setTaskText } = useTaskText();
