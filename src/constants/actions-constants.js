@@ -1,0 +1,12 @@
+export const SET_IS_LOADING = 'SET_IS_LOADING';
+export const SET_TODOS = 'SET_TODOS';
+export const SET_FILTERED_TODOS = 'SET_FILTERED_TODOS';
+export const SET_IS_CREATING = 'SET_IS_CREATING';
+export const SET_ERROR = 'SET_ERROR';
+export const SET_IS_SEARCHING = 'SET_IS_SEARCHING';
+export const SET_TASK_TEXT = 'SET_TASK_TEXT';
+export const ADD_TODO = 'ADD_TODO';
+export const SET_IS_DELETED = 'SET_IS_DELETED';
+export const SET_IS_DELETING = 'SET_IS_DELETING';
+export const SET_IS_EDITING = 'SET_IS_EDITING';
+export const SET_EDITING_TASK_ID = 'SET_EDITING_TASK_ID';

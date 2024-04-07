@@ -1,0 +1,16 @@
+export const initialState = {
+	todos: [],
+	taskText: '',
+	isLoading: false,
+	error: '',
+	filteredTodos: [],
+	searchPhrase: '',
+	showSearch: false,
+	isEditing: false,
+	isDelete: false,
+	isDeleting: false,
+	isSorting: false,
+	isSearching: false,
+	isCreating: false,
+	editingTaskId: null,
+};

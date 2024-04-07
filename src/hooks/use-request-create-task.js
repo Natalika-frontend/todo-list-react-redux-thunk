@@ -1,20 +1,25 @@
-import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectError, selectIsCreating, selectTaskText, selectTodos } from '../selectors';
+import { setIsCreating, setError, setIsSearching, setTaskText, addTodo } from '../actions/task-actions';
 
-export const useRequestCreateTask = (fetchTodos, todos, setTaskText, setIsSearching) => {
-	const [isCreating, setIsCreating] = useState(false);
-	const [error, setError] = useState('');
+export const useRequestCreateTask = () => {
+	const dispatch = useDispatch();
+	const todos = useSelector(selectTodos);
+	const isCreating = useSelector(selectIsCreating);
+	const error = useSelector(selectError);
+	const taskText = useSelector(selectTaskText);
 
-	const requestAddTask = (taskText) => {
-		setIsCreating(true);
-		setIsSearching(false);
+	const requestAddTask = () => {
+		dispatch(setIsCreating(true));
+		dispatch(setIsSearching(false));
 
 		const isDuplicateTask = todos.some(todo =>
 			todo.title.toLowerCase() === taskText.trim().toLowerCase()
 		);
 
 		if (isDuplicateTask) {
-			setError('Задача уже существует');
-			setIsCreating(false);
+			dispatch(setError('Задача уже существует'));
+			dispatch(setIsCreating(false));
 			return;
 		}
 
@@ -26,12 +31,16 @@ export const useRequestCreateTask = (fetchTodos, todos, setTaskText, setIsSearch
 			}),
 		})
 			.then((rawResponse) => rawResponse.json())
-			.then(() => {
-				fetchTodos();
+			.then((newTodo) => {
+				dispatch(addTodo(newTodo));
+				dispatch(setTaskText(''));
+				dispatch(setError(''));
+			})
+			.catch(() => {
+				dispatch(setError('Ошибка при добавлении задачи'));
 			})
 			.finally(() => {
-				setIsCreating(false);
-				setTaskText('');
+				dispatch(setIsCreating(false));
 			});
 	};
 	return { isCreating, error, requestAddTask, setError };

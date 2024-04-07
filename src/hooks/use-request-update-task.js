@@ -1,10 +1,12 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { selectTaskText, selectTodos } from '../selectors';
+import { setEditingTaskId, setIsEditing, setTaskText } from '../actions/task-actions';
 
-import { useState } from "react";
+export const useRequestUpdateTask = (fetchTodos) => {
+	const dispatch = useDispatch();
+	const todos = useSelector(selectTodos);
+	const taskText = useSelector(selectTaskText);
 
-export const useRequestUpdateTask = (fetchTodos, todos, taskText, setTaskText) => {
-
-	const [isEditing, setIsEditing] = useState(false);
-	const [editingTaskId, setEditingTaskId] = useState(null);
 	const requestUpdateTask = (id) => {
 		const updatedTodo = todos.find(todo => todo.id === id);
 		if (updatedTodo) {
@@ -16,21 +18,15 @@ export const useRequestUpdateTask = (fetchTodos, todos, taskText, setTaskText) =
 			})
 				.then(() => {
 					fetchTodos();
-					setEditingTaskId(null);
+					dispatch(setEditingTaskId(null));
 				})
 				.finally(() => {
-					setTaskText('');
-					setIsEditing(false);
+					dispatch(setTaskText(''));
+					dispatch(setIsEditing(false));
 				});
 		}
 	};
 	return {
-		taskText,
-		isEditing,
-		editingTaskId,
 		requestUpdateTask,
-		setIsEditing,
-		setEditingTaskId,
-		setTaskText,
 	};
 };
