@@ -2,22 +2,21 @@ import styles from './task.module.css';
 import { Button } from '../button/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { setEditingTaskId, setIsEditing, setTaskText } from '../../actions/task-actions';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectIsDeleting } from '../../selectors';
-import { useRequestDeleteTask } from '../../hooks';
+import { useDispatch } from 'react-redux';
+import { deleteTodo, updateTodo } from '../../actions/async-crud-actions';
+import { setIsEditing } from '../../actions/task-actions';
 
-export const Task = ({ id, title, fetchTodos }) => {
+export const Task = ({ id, title }) => {
 	const dispatch = useDispatch();
-	const isDeleting = useSelector(selectIsDeleting);;
 
 	const handleEditTask = (id, title) => {
 		dispatch(setIsEditing(true));
-		dispatch(setEditingTaskId(id));
-		dispatch(setTaskText(title));
+		dispatch(updateTodo(id, title))
 	};
 
-	const {requestDeleteTask} = useRequestDeleteTask(fetchTodos);
+	const handleDeleteTask = (id) => {
+		dispatch(deleteTodo(id));
+	};
 
 	return (
 		<li key={id} className={styles.task}>
@@ -25,7 +24,7 @@ export const Task = ({ id, title, fetchTodos }) => {
 			<Button onClick={() => handleEditTask(id, title)}>
 				<FontAwesomeIcon icon={faPenToSquare} />
 			</Button>
-			<Button disabled={isDeleting} onClick={() => requestDeleteTask(id)}>Удалить</Button>
+			<Button onClick={() => handleDeleteTask(id)}>Удалить</Button>
 		</li>
 	);
 };

@@ -1,74 +1,69 @@
-import { initialState } from '../store/initial-state';
 import {
-	ADD_TODO, SET_EDITING_TASK_ID,
-	SET_ERROR,
-	SET_FILTERED_TODOS,
-	SET_IS_CREATING, SET_IS_DELETED, SET_IS_DELETING, SET_IS_EDITING,
-	SET_IS_LOADING, SET_IS_SEARCHING, SET_TASK_TEXT,
-	SET_TODOS,
+	CREATE_TODO,
+	DELETE_TODO,
+	READ_TODOS,
+	SET_ERROR, SET_FILTERED_TODOS, SET_IS_EDITING,
+	SET_IS_LOADING,
+	UPDATE_TODO,
 } from '../constants/actions-constants';
+import { SET_IS_SEARCHING } from '../constants/search-constants';
+
+const initialState = {
+	todos: [],
+	taskText: '',
+	isLoading: false,
+	error: '',
+	filteredTodos: [],
+	isEditing: false,
+	isCreating: false,
+};
 
 export const taskReducer = (state = initialState, action) => {
 	switch (action.type) {
-		case SET_IS_LOADING:
-			return {
-				...state,
-				isLoading: action.payload
-			};
-		case SET_TODOS:
+		case READ_TODOS:
 			return {
 				...state,
 				todos: action.payload,
-			}
-		case SET_FILTERED_TODOS:
+			};
+		case CREATE_TODO:
 			return {
 				...state,
-				filteredTodos: action.payload,
-			}
-		case SET_IS_CREATING:
+				todo: action.payload,
+			};
+		case DELETE_TODO:
 			return {
 				...state,
-				isCreating: action.payload,
-			}
-		case SET_ERROR:
+				todos: state.todos.filter(todo => todo.id !== action.payload),
+			};
+		case UPDATE_TODO:
 			return {
 				...state,
-				error: action.payload,
-			}
+				todos: state.todos.map(todo => todo.id === action.payload ? { ...todo, title: action.taskText } : todo),
+			};
+		case SET_IS_LOADING:
+			return {
+				...state,
+				isLoading: action.payload,
+			};
 		case SET_IS_SEARCHING:
 			return {
 				...state,
 				isSearching: action.payload,
-			}
-			case SET_TASK_TEXT:
+			};
+		case SET_ERROR:
 			return {
 				...state,
-				taskText: action.payload,
-			}
-		case ADD_TODO:
+				error: action.payload,
+			};
+		case SET_FILTERED_TODOS:
 			return {
 				...state,
-				todos: [...state.todos, action.payload],
-			}
-		case SET_IS_DELETED:
-			return {
-				...state,
-				todos: [...state.todos, action.payload],
-			}
-		case SET_IS_DELETING:
-			return {
-				...state,
-				todos: [...state.todos, action.payload],
-			}
+				filteredTodos: action.payload,
+			};
 		case SET_IS_EDITING:
 			return {
 				...state,
 				isEditing: action.payload,
-			}
-		case SET_EDITING_TASK_ID:
-			return {
-				...state,
-				editingTaskId: action.payload,
 			}
 		default:
 			return state;

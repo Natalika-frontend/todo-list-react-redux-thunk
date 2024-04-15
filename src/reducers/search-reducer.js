@@ -1,5 +1,10 @@
-import { initialState } from '../store/initial-state';
 import { SET_IS_SEARCHING, SET_SEARCH_PHRASE, SET_SHOW_SEARCH } from '../constants/search-constants';
+
+const initialState = {
+	searchPhrase: '',
+	showSearch: false,
+	isSearching: false,
+};
 
 export const searchReducer = (state = initialState, action) => {
 	switch (action.type) {
@@ -7,17 +12,17 @@ export const searchReducer = (state = initialState, action) => {
 			return {
 				...state,
 				searchPhrase: action.payload,
-			}
-			case SET_SHOW_SEARCH:
-				return {
-					...state,
-					showSearch: action.payload,
-				}
+			};
+		case SET_SHOW_SEARCH:
+			return {
+				...state,
+				showSearch: action.payload,
+			};
 		case SET_IS_SEARCHING:
 			return {
 				...state,
 				isSearching: action.payload,
-			}
+			};
 		default:
 			return state;
 	}

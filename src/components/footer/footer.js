@@ -4,42 +4,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-	selectEditingTaskId,
 	selectIsCreating,
 	selectIsEditing, selectIsSearching, selectIsSorting,
 	selectSearchPhrase, selectShowSearch,
 	selectTaskText, selectTodos,
 } from '../../selectors';
-import { setError, setFilteredTodos, setIsEditing, setIsSearching, setTaskText } from '../../actions/task-actions';
+import { setError, setFilteredTodos, setTaskText } from '../../actions/task-actions';
 import { useEffect } from 'react';
-import { useRequestCreateTask, useRequestReadTasks, useRequestUpdateTask } from '../../hooks';
 import { setIsSorting } from '../../actions/sort-actions';
-import { setShowSearch } from '../../actions/search-actions';
+import { setIsSearching, setShowSearch } from '../../actions/search-actions';
+import { createTodos } from '../../actions/async-crud-actions';
 
 export const Footer = () => {
 	const dispatch = useDispatch();
 	const todos = useSelector(selectTodos);
-	const editingTaskId = useSelector(selectEditingTaskId);
-	const searchPhrase = useSelector(selectSearchPhrase);
+	const showSearch = useSelector(selectShowSearch);
 	const taskText = useSelector(selectTaskText);
+	const isSorting = useSelector(selectIsSorting);
+	const isSearching = useSelector(selectIsSearching);
+	const searchPhrase = useSelector(selectSearchPhrase);
 	const isCreating = useSelector(selectIsCreating);
 	const isEditing = useSelector(selectIsEditing);
-	const showSearch = useSelector(selectShowSearch);
-	const isSearching = useSelector(selectIsSearching);
-	const isSorting = useSelector(selectIsSorting);
-
-	const { fetchTodos } = useRequestReadTasks();
-	const { requestAddTask } = useRequestCreateTask();
-	const { requestUpdateTask } = useRequestUpdateTask(fetchTodos);
 
 	const handleAddButtonClick = () => {
 		if (taskText.trim() !== '') {
-			if (editingTaskId !== null) {
-				requestUpdateTask(editingTaskId);
-			} else {
-				dispatch(setIsEditing(false));
-				requestAddTask(taskText);
-			}
+				dispatch(createTodos(taskText));
 		}
 	};
 
@@ -57,6 +46,13 @@ export const Footer = () => {
 		dispatch(setError(''));
 	};
 
+	const handleChange = ({ target }) => {
+		dispatch(setTaskText(target.value));
+		dispatch(setError(''));
+		dispatch(setShowSearch(false));
+		dispatch(setIsSearching(false));
+	}
+
 	useEffect(() => {
 		let filtered = todos;
 		if (searchPhrase.trim() !== '') {
@@ -66,19 +62,14 @@ export const Footer = () => {
 			filtered = [...filtered].sort((a, b) => a.title.localeCompare(b.title));
 		}
 		dispatch(setFilteredTodos(filtered));
-	}, [searchPhrase, isSorting, todos]);
+	}, [dispatch, searchPhrase, isSorting, todos]);
 
 	return (
 		<div className={styles.footer}>
 			<input
 				type="text"
 				value={taskText}
-				onChange={({ target }) => {
-					dispatch(setTaskText(target.value));
-					dispatch(setError(''));
-					dispatch(setShowSearch(false));
-					dispatch(setIsSearching(false));
-				}}
+				onChange={handleChange}
 				placeholder="Введите задачу"
 				className={styles.input}
 			/>
