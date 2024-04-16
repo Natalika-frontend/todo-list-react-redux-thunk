@@ -26,7 +26,7 @@ const fetchUpdateTodo = (id, taskText) => {
 		return fetch(`http://localhost:3015/todos/${id}`, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json; charset=utf-8' },
-			body: JSON.stringify({title: taskText}),
+			body: JSON.stringify({id, title: taskText}),
 		});
 };
 

@@ -1,4 +1,11 @@
-import { SET_ERROR, SET_FILTERED_TODOS, SET_IS_EDITING, SET_TASK_TEXT } from '../constants/actions-constants';
+import {
+	SET_EDITING_TASK_ID,
+	SET_ERROR,
+	SET_FILTERED_TODOS,
+	SET_IS_CREATING,
+	SET_IS_EDITING,
+	SET_TASK_TEXT,
+} from '../constants/actions-constants';
 
 export const setError = (error) => ({
 	type: SET_ERROR,
@@ -18,4 +25,14 @@ export const setTaskText = (taskText) => ({
 export const setIsEditing = (status) => ({
 	type: SET_IS_EDITING,
 	payload: status,
+});
+
+export const setIsCreating = (status) => ({
+	type: SET_IS_CREATING,
+	payload: status,
+});
+
+export const setEditingTaskId = (id) => ({
+	type: SET_EDITING_TASK_ID,
+	payload: id,
 });

@@ -7,3 +7,5 @@ export const SET_ERROR = 'SET_ERROR';
 export const SET_FILTERED_TODOS = 'SET_FILTERED_TODOS';
 export const SET_TASK_TEXT = 'SET_TASK_TEXT';
 export const SET_IS_EDITING = 'SET_IS_EDITING';
+export const SET_IS_CREATING = 'SET_IS_CREATING';
+export const SET_EDITING_TASK_ID = 'SET_EDITING_TASK_ID';

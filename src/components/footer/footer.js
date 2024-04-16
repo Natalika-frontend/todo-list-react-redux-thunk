@@ -4,16 +4,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+	selectEditingTaskId,
 	selectIsCreating,
 	selectIsEditing, selectIsSearching, selectIsSorting,
 	selectSearchPhrase, selectShowSearch,
 	selectTaskText, selectTodos,
 } from '../../selectors';
-import { setError, setFilteredTodos, setTaskText } from '../../actions/task-actions';
+import {
+	setError,
+	setFilteredTodos,
+	setIsCreating,
+	setIsEditing,
+	setTaskText,
+} from '../../actions/task-actions';
 import { useEffect } from 'react';
 import { setIsSorting } from '../../actions/sort-actions';
 import { setIsSearching, setShowSearch } from '../../actions/search-actions';
-import { createTodos } from '../../actions/async-crud-actions';
+import { createTodos, readTodos, updateTodo } from '../../actions/async-crud-actions';
 
 export const Footer = () => {
 	const dispatch = useDispatch();
@@ -25,10 +32,27 @@ export const Footer = () => {
 	const searchPhrase = useSelector(selectSearchPhrase);
 	const isCreating = useSelector(selectIsCreating);
 	const isEditing = useSelector(selectIsEditing);
+	const editingTaskId = useSelector(selectEditingTaskId);
+
+	const handleSaveButtonClick = () => {
+		dispatch(setTaskText(''));
+		dispatch(setIsEditing(false));
+	};
 
 	const handleAddButtonClick = () => {
 		if (taskText.trim() !== '') {
-				dispatch(createTodos(taskText));
+			if (isEditing) {
+				handleSaveButtonClick();
+			} else {
+				if (todos.some(todo => todo.title.trim().toLowerCase() === taskText.trim().toLowerCase())) {
+					dispatch(setError('Такая задача уже существует'));
+				} else {
+					dispatch(createTodos(taskText)).then(() => {
+						dispatch(setTaskText(''));
+						dispatch(readTodos())
+					});
+				}
+			}
 		}
 	};
 
@@ -49,9 +73,18 @@ export const Footer = () => {
 	const handleChange = ({ target }) => {
 		dispatch(setTaskText(target.value));
 		dispatch(setError(''));
+		dispatch(setIsCreating(false))
 		dispatch(setShowSearch(false));
 		dispatch(setIsSearching(false));
-	}
+	};
+
+	const handleEditTask = () => {
+		if (editingTaskId && taskText.trim() !== '') {
+			dispatch(updateTodo(editingTaskId, taskText));
+			dispatch(setTaskText(''));
+			dispatch(setIsEditing(false));
+		}
+	};
 
 	useEffect(() => {
 		let filtered = todos;
@@ -74,7 +107,7 @@ export const Footer = () => {
 				className={styles.input}
 			/>
 			<Button disabled={isCreating || taskText.trim() === ''}
-					onClick={handleAddButtonClick}>{isEditing ?
+					onClick={isEditing ? handleEditTask : handleAddButtonClick}>{isEditing ?
 				<FontAwesomeIcon icon={faPenToSquare} /> : '+'}
 			</Button>
 			<Button onClick={toggleSearch}>

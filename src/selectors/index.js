@@ -8,3 +8,5 @@ export * from './select-is-searching';
 export * from './select-search-phrase';
 export * from './select-is-creating';
 export * from './select-is-editing';
+export * from './select-filtered-todos';
+export * from './select-editing-task-id';

@@ -2,24 +2,26 @@ import styles from './App.module.css';
 import { Header, Task, Search, Footer } from './components';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsSorting } from './actions/sort-actions';
-import { setSearchPhrase } from './actions/search-actions';
+import { setSearchPhrase, setShowSearch } from './actions/search-actions';
 import { useEffect } from 'react';
 import { readTodos } from './actions/async-crud-actions';
-import { selectError, selectIsLoading, selectShowSearch, selectTodos } from './selectors';
+import { selectError, selectFilteredTodos, selectIsLoading, selectIsSorting, selectShowSearch } from './selectors';
 
 function App() {
 	const dispatch = useDispatch();
-	const todos = useSelector(selectTodos);
+	const filteredTodos = useSelector(selectFilteredTodos);
 	const error = useSelector(selectError);
 	const isLoading = useSelector(selectIsLoading);
 	const showSearch = useSelector(selectShowSearch);
+	const isSorting = useSelector(selectIsSorting);
 
 	useEffect(() => {
 		dispatch(readTodos());
 	}, [dispatch]);
 
 	const handleSearch = (searchValue) => {
-		dispatch(setIsSorting(false));
+		dispatch(setShowSearch(true));
+		dispatch(setIsSorting(!isSorting));
 		dispatch(setSearchPhrase(searchValue));
 	};
 
@@ -32,7 +34,7 @@ function App() {
 					{isLoading ? (
 						<div className={styles.loader}></div>
 					) : (
-						todos.map(({ id, title }) => (
+						filteredTodos.map(({ id, title }) => (
 							<Task key={id}
 								  id={id}
 								  title={title}

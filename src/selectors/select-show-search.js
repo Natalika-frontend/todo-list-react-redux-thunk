@@ -1,1 +1,1 @@
-export const selectShowSearch = (state) => state.tasks.showSearch;
+export const selectShowSearch = (state) => state.search.showSearch;
